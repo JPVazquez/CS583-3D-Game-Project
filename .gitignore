@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Asset Libraries
+/Packages/*
+/Library/*
