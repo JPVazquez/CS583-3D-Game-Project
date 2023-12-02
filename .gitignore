@@ -34,3 +34,6 @@
 # Asset Libraries
 /Packages/*
 /Library/*
+/Temp/*
+/Logs/*
+/\.vs/*
