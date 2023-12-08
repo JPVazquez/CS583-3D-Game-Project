@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update() {
         isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundCheck);
-
+        Debug.DrawRay(transform.position, Vector3.down, Color.yellow);
         MyInput();
         CheckGravity();
         SpeedControl();
@@ -73,7 +73,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Q)) {
             gravityDirection = Camera.main.transform.rotation;
 		}
-
 
         if (Input.GetKey(jumpKey) && readyToJump && isGrounded) {
             readyToJump = false;
@@ -105,8 +104,6 @@ public class PlayerMovement : MonoBehaviour
         // Extract plane to change gravity to based off quaternion
 
         // Change physics.gravity to correct plane
-        Physics.gravity = new Vector3();
-
 
         // Rotate player object (which should rotate camera object as well)
 
