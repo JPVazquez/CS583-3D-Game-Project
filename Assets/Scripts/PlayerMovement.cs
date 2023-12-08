@@ -38,6 +38,9 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
+    Animator playerAnim;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,13 +51,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-	private void FixedUpdate() {
+    private void FixedUpdate() {
         MovePlayer();
 	}
 
 	// Update is called once per frame
 	void Update() {
         isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundCheck);
+
+        //Get Animator
+        playerAnim = GetComponent<Animator>();
 
         MyInput();
         CheckGravity();
@@ -64,6 +70,29 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0f;
+
+        //Animations
+        //Running
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        {
+            playerAnim.SetBool("IsRunning", true);
+        }
+
+        else
+        {
+            playerAnim.SetBool("IsRunning", false);
+        }
+
+        //Jumping Animation
+        if (!isGrounded)
+        {
+            playerAnim.SetBool("IsGrounded", false);
+        }
+
+        else
+        {
+            playerAnim.SetBool("IsGrounded", true);
+        }
     }
 
     private void MyInput() {

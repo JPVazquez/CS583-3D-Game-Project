@@ -37,3 +37,9 @@
 /Temp/*
 /Logs/*
 /\.vs/*
+.DS_Store
+Assembly-CSharp.csproj
+CS583-3D-Game-Project.sln
+Logs/shadercompiler-UnityShaderCompiler0.log
+Temp/FSTimeGet-8a8a1d64e6ac84d339077931e755a767
+Temp/workerlic
