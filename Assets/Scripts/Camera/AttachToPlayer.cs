@@ -11,5 +11,6 @@ public class AttachToPlayer : MonoBehaviour
     void Update()
     {
         transform.position = cameraPosition.position;
-    }
+        transform.rotation = cameraPosition.rotation;
+	}
 }

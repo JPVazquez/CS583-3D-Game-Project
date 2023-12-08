@@ -1,9 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    public bool debugMode;
+    private TextMeshPro playerDebug;
+    private List<string> errorMessages;
+    private PlayerControl camera;
+    private Vector3 targetAngle;
+
 
     [Header("Movement")]
     public float moveSpeed;
@@ -13,7 +21,8 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
-    public Transform gravityRay;
+    public Transform gravityDirection;
+    private bool qKeyPressed = false; // Variable to track if Q key was pressed
 
     public bool readyToJump;
 
@@ -25,14 +34,10 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundCheck;
     bool isGrounded;
 
-
     public Transform orientation;
-    public Transform straightAhead;
-
 
     float hozInput;
     float vertInput;
-    Quaternion gravityDirection;
 
     Vector3 moveDirection;
 
@@ -45,6 +50,8 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         readyToJump = true;
         playerHeight = GetComponentInChildren<CapsuleCollider>().height;
+        playerDebug = GameObject.FindWithTag("PlayerDebug").GetComponent<TextMeshPro>();
+        camera = GameObject.FindWithTag("MainCamera").GetComponent<PlayerControl>();
     }
 
 
@@ -54,11 +61,28 @@ public class PlayerMovement : MonoBehaviour
 
 	// Update is called once per frame
 	void Update() {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundCheck);
-        Debug.DrawRay(transform.position, Vector3.down, Color.yellow);
+        isGrounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, groundCheck);
+
         MyInput();
-        CheckGravity();
         SpeedControl();
+
+        if (debugMode) {
+            errorMessages = new List<string>();
+
+            // Add each variable we want to display to errorMessages list and combine with newLine
+            string playerRotation = "";
+            string orientationRotation = "";
+
+            playerRotation = "playerRotation: " + transform.rotation.eulerAngles.ToString();
+            errorMessages.Add(playerRotation);
+
+            orientationRotation = "orientationRotation: " + orientation.rotation.eulerAngles.ToString();
+            errorMessages.Add(orientationRotation);
+
+
+
+            playerDebug.SetText(string.Join(System.Environment.NewLine, errorMessages));
+        }
 
         if (isGrounded)
             rb.drag = groundDrag;
@@ -70,9 +94,12 @@ public class PlayerMovement : MonoBehaviour
         hozInput = Input.GetAxisRaw("Horizontal");
         vertInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKey(KeyCode.Q)) {
-            gravityDirection = Camera.main.transform.rotation;
-		}
+        if (Input.GetKeyDown(KeyCode.Q) && !qKeyPressed) {
+            qKeyPressed = true;
+            CheckGravity();
+            Invoke(nameof(ResetGravityPower), 3);
+        }
+
 
         if (Input.GetKey(jumpKey) && readyToJump && isGrounded) {
             readyToJump = false;
@@ -83,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer() {
         moveDirection = orientation.forward * vertInput + orientation.right * hozInput;
-            
+        
         if (isGrounded) {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         } else if (!isGrounded) {
@@ -101,12 +128,39 @@ public class PlayerMovement : MonoBehaviour
 	}
 
     private void CheckGravity() {
-        // Extract plane to change gravity to based off quaternion
+        Ray gravityRay = new Ray(transform.position, gravityDirection.forward);
+        Debug.DrawRay(transform.position, gravityDirection.forward * 50.0f, Color.yellow);
+        RaycastHit collidedPlane;
 
-        // Change physics.gravity to correct plane
+        if (Physics.Raycast(gravityRay, out collidedPlane, 50.0f)) {
+            Physics.gravity = collidedPlane.normal * -9.81f;
 
-        // Rotate player object (which should rotate camera object as well)
+            Quaternion originalRotation = transform.rotation;
+            Vector3 playerUp = originalRotation * Vector3.up;
 
+            Quaternion rotationDifference = Quaternion.FromToRotation(collidedPlane.normal, playerUp);
+
+
+            StartCoroutine(DelayedRotation(Quaternion.Euler(-rotationDifference.eulerAngles)));
+            
+        }
+    }
+
+    IEnumerator DelayedRotation(Quaternion targetRotation) {
+        float duration = 0.5f; // Adjust as needed
+        Quaternion initialRotation = transform.rotation;
+        Quaternion finalRotation = targetRotation * initialRotation;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration) {
+            float t = elapsedTime / duration;
+            transform.rotation = Quaternion.Slerp(initialRotation, finalRotation, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.rotation = finalRotation; // Ensure final rotation is exact
     }
 
     public void Jump() {
@@ -117,5 +171,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void ResetJump() {
         readyToJump = true;
+    }
+
+    private void ResetGravityPower() {
+        qKeyPressed = false;
 	}
 }
