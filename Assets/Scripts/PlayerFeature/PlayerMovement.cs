@@ -9,7 +9,6 @@ public class PlayerMovement : MonoBehaviour
     public bool debugMode;
     private TextMeshPro playerDebug;
     private List<string> errorMessages;
-    private PlayerControl camera;
     private Vector3 targetAngle;
 
 
@@ -50,8 +49,7 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         readyToJump = true;
         playerHeight = GetComponentInChildren<CapsuleCollider>().height;
-        playerDebug = GameObject.FindWithTag("PlayerDebug").GetComponent<TextMeshPro>();
-        camera = GameObject.FindWithTag("MainCamera").GetComponent<PlayerControl>();
+        //playerDebug = GameObject.FindWithTag("PlayerDebug").GetComponent<TextMeshPro>();
     }
 
 
@@ -62,27 +60,28 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update() {
         isGrounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, groundCheck);
+        Debug.DrawRay(transform.position, -transform.up * (playerHeight * 0.5f + 0.2f), Color.yellow);
 
         MyInput();
         SpeedControl();
 
-        if (debugMode) {
-            errorMessages = new List<string>();
+        //if (debugMode) {
+        //    errorMessages = new List<string>();
 
-            // Add each variable we want to display to errorMessages list and combine with newLine
-            string playerRotation = "";
-            string orientationRotation = "";
+        //    // Add each variable we want to display to errorMessages list and combine with newLine
+        //    string playerRotation = "";
+        //    string orientationRotation = "";
 
-            playerRotation = "playerRotation: " + transform.rotation.eulerAngles.ToString();
-            errorMessages.Add(playerRotation);
+        //    playerRotation = "playerRotation: " + transform.rotation.eulerAngles.ToString();
+        //    errorMessages.Add(playerRotation);
 
-            orientationRotation = "orientationRotation: " + orientation.rotation.eulerAngles.ToString();
-            errorMessages.Add(orientationRotation);
+        //    orientationRotation = "orientationRotation: " + orientation.rotation.eulerAngles.ToString();
+        //    errorMessages.Add(orientationRotation);
 
 
 
-            playerDebug.SetText(string.Join(System.Environment.NewLine, errorMessages));
-        }
+        //    playerDebug.SetText(string.Join(System.Environment.NewLine, errorMessages));
+        //}
 
         if (isGrounded)
             rb.drag = groundDrag;
@@ -129,10 +128,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckGravity() {
         Ray gravityRay = new Ray(transform.position, gravityDirection.forward);
-        Debug.DrawRay(transform.position, gravityDirection.forward * 50.0f, Color.yellow);
         RaycastHit collidedPlane;
 
-        if (Physics.Raycast(gravityRay, out collidedPlane, 50.0f)) {
+        if (Physics.Raycast(gravityRay, out collidedPlane, 50.0f, groundCheck)) {
             Physics.gravity = collidedPlane.normal * -9.81f;
 
             Quaternion originalRotation = transform.rotation;
