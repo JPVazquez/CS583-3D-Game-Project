@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharAnimations : MonoBehaviour
+public class ModelAnimations : MonoBehaviour
 {
     Animator playerAnim;
+    public Transform modelRotation;
 
     // Start is called before the first frame update
     void Start()
@@ -14,17 +15,17 @@ public class CharAnimations : MonoBehaviour
 
     private void Awake()
     {
-        
+        playerAnim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundCheck);
+        //Rotate character model with mouse input
+        transform.rotation = modelRotation.rotation;
 
-        playerAnim = GetComponent<Animator>();
-
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        //Run animation
+        if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
             playerAnim.SetBool("IsRunning", true);
         }
@@ -34,16 +35,16 @@ public class CharAnimations : MonoBehaviour
             playerAnim.SetBool("IsRunning", false);
         }
 
-        //Jumping Animation
-        /*
-        if (!isGrounded)
+        //Jump Animation
+        if (!GetComponentInParent<PlayerMovement>().isGrounded)
         {
             playerAnim.SetBool("IsGrounded", false);
+            //playerAnim('Jump').speed = 1;
         }
 
         else
         {
             playerAnim.SetBool("IsGrounded", true);
-        }*/
+        }
     }
 }

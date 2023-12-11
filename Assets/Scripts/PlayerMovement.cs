@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("GroundCheck")]
     private float playerHeight;
     public LayerMask groundCheck;
-    bool isGrounded;
+    public bool isGrounded;
 
     public Transform orientation;
 
@@ -42,8 +42,6 @@ public class PlayerMovement : MonoBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
-
-    Animator playerAnim;
 
 
     // Start is called before the first frame update
@@ -65,9 +63,6 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update() {
         isGrounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, groundCheck);
-
-        //Get Animator
-        playerAnim = GetComponent<Animator>();
 
         MyInput();
         SpeedControl();
@@ -94,29 +89,6 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0f;
-
-        //Animations
-        //Running
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
-        {
-            playerAnim.SetBool("IsRunning", true);
-        }
-
-        else
-        {
-            playerAnim.SetBool("IsRunning", false);
-        }
-
-        //Jumping Animation
-        if (!isGrounded)
-        {
-            playerAnim.SetBool("IsGrounded", false);
-        }
-
-        else
-        {
-            playerAnim.SetBool("IsGrounded", true);
-        }
     }
 
     private void MyInput() {
