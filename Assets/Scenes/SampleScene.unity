@@ -847,12 +847,13 @@ MonoBehaviour:
   jumpForce: 7
   jumpCooldown: 1
   airMultiplier: 1
-  gravityDirection: {fileID: 963194228}
+  cameraForward: {fileID: 0}
   readyToJump: 0
   jumpKey: 32
   groundCheck:
     serializedVersion: 2
     m_Bits: 128
+  isGrounded: 0
   orientation: {fileID: 1863243446}
 --- !u!114 &873733225
 MonoBehaviour:

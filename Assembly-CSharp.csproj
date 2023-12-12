@@ -66,9 +66,10 @@
     <Compile Include="Assets/Scripts/Target.cs" />
     <Compile Include="Assets/Scripts/Laser.cs" />
     <Compile Include="Assets/Scripts/CrossHairColorChange.cs" />
+    <Compile Include="Assets/Scripts/PlayerFeature/ItemPickup.cs" />
     <Compile Include="Assets/Scripts/Camera/MovePlayerCam.cs" />
     <Compile Include="Assets/Scripts/ModelAnimations.cs" />
-    <Compile Include="Assets/Scripts/PlayerMovement.cs" />
+    <Compile Include="Assets/Scripts/PlayerFeature/PlayerMovement.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
