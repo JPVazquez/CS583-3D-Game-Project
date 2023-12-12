@@ -19,7 +19,8 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
-    public Transform gravityDirection;
+    public Transform cameraForward;
+    private Vector3 gravityDirection;
     private bool qKeyPressed = false; // Variable to track if Q key was pressed
 
     public bool readyToJump;
@@ -41,35 +42,33 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
         playerHeight = GetComponentInChildren<CapsuleCollider>().height;
         camera = GameObject.FindWithTag("MainCamera").GetComponent<PlayerControl>();
+        //playerDebug = GameObject.FindWithTag("PlayerDebug").GetComponent<TextMeshPro>();
+    }
+
+    // Start is called before the first frame update
+    void Update() {
+        isGrounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, groundCheck);
+        Debug.DrawRay(transform.position, cameraForward.forward * 10f, Color.green);
+
+        MyInput();
+        SpeedControl();
+
+		if (isGrounded)
+            rb.drag = groundDrag;
+        else
+            rb.drag = 0f;
     }
 
 
     private void FixedUpdate() {
         MovePlayer();
 	}
-
-	// Update is called once per frame
-	void Update() {
-        isGrounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, groundCheck);
-
-        MyInput();
-        SpeedControl();
-
- 
-        if (isGrounded)
-            rb.drag = groundDrag;
-        else
-            rb.drag = 0f;
-    }
 
     private void MyInput() {
         hozInput = Input.GetAxisRaw("Horizontal");
@@ -78,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && !qKeyPressed) {
             qKeyPressed = true;
             CheckGravity();
-            Invoke(nameof(ResetGravityPower), 3);
+            Invoke(nameof(ResetGravityPower), 2);
         }
 
 
@@ -86,35 +85,41 @@ public class PlayerMovement : MonoBehaviour
             readyToJump = false;
             Jump();
             Invoke(nameof(ResetJump), jumpCooldown);
-		}
+        }
     }
 
     private void MovePlayer() {
         moveDirection = orientation.forward * vertInput + orientation.right * hozInput;
-        
+
         if (isGrounded) {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
         } else if (!isGrounded) {
+            // If object is falling in x or z apply artificial force
+            if (gravityDirection.y == 0) {
+                moveDirection += gravityDirection;
+            }
+
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-		}
-	}
+        }
+    }
 
     private void SpeedControl() {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         if (flatVel.magnitude > moveSpeed) {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
-		}
-	}
+        }
+    }
 
     private void CheckGravity() {
-        Ray gravityRay = new Ray(transform.position, gravityDirection.forward);
-        Debug.DrawRay(transform.position, gravityDirection.forward * 50.0f, Color.yellow);
+        Ray gravityRay = new Ray(transform.position, cameraForward.forward);
         RaycastHit collidedPlane;
 
-        if (Physics.Raycast(gravityRay, out collidedPlane, 50.0f)) {
+        if (Physics.Raycast(gravityRay, out collidedPlane, 50.0f, groundCheck)) {
             Physics.gravity = collidedPlane.normal * -9.81f;
+
+            gravityDirection = collidedPlane.normal * -9.81f;
 
             Quaternion originalRotation = transform.rotation;
             Vector3 playerUp = originalRotation * Vector3.up;
@@ -123,8 +128,10 @@ public class PlayerMovement : MonoBehaviour
 
 
             StartCoroutine(DelayedRotation(Quaternion.Euler(-rotationDifference.eulerAngles)));
-            
+
         }
+
+
     }
 
     IEnumerator DelayedRotation(Quaternion targetRotation) {
@@ -141,6 +148,7 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
 
+        
         transform.rotation = finalRotation; // Ensure final rotation is exact
     }
 
@@ -148,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
         // reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-	}
+    }
 
     private void ResetJump() {
         readyToJump = true;
@@ -156,5 +164,5 @@ public class PlayerMovement : MonoBehaviour
 
     private void ResetGravityPower() {
         qKeyPressed = false;
-	}
+    }
 }
