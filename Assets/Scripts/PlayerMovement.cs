@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("GroundCheck")]
     private float playerHeight;
     public LayerMask groundCheck;
-    bool isGrounded;
+    public bool isGrounded;
 
     public Transform orientation;
 
@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
+
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-	private void FixedUpdate() {
+    private void FixedUpdate() {
         MovePlayer();
 	}
 
