@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class PlayerControl : MonoBehaviour
 {
 
     public bool debugMode;
-    private TextMeshPro cameraDebug;
     private List<string> errorMessages;
 
     public float sensX;
@@ -26,7 +24,6 @@ public class PlayerControl : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        cameraDebug = GameObject.FindWithTag("CameraDebug").GetComponent<TextMeshPro>();
         cameraPosition = GetComponentInParent<AttachToPlayer>().cameraPosition;
     }
 
@@ -44,25 +41,6 @@ public class PlayerControl : MonoBehaviour
         transform.localRotation= Quaternion.Euler(xRotation, yRotation, 0);
         orientation.localRotation = Quaternion.Euler(orientation.localRotation.eulerAngles.x, yRotation, 0);
 
-        if (debugMode) {
-            errorMessages = new List<string>();
-
-            // Add each variable we want to display to errorMessages list and combine with newLine
-            string cameraLocalRotation = "";
-            string orientationRotationY = "";
-            string xInput = "";
-
-            cameraLocalRotation = "cameraLocalRotation: " + transform.rotation.eulerAngles.ToString();
-            errorMessages.Add(cameraLocalRotation);
-
-            orientationRotationY = "orientationRotationY: " + yRotation.ToString();
-            errorMessages.Add(orientationRotationY);
-
-            xInput = "clampedXRotation: " + xRotation.ToString();
-            errorMessages.Add(xInput);
-
-            cameraDebug.SetText(string.Join(System.Environment.NewLine, errorMessages));
-        }
-        
+   
     }
 }

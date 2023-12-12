@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
 
     public bool debugMode;
-    private TextMeshPro playerDebug;
     private List<string> errorMessages;
     private PlayerControl camera;
     private Vector3 targetAngle;
@@ -51,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         readyToJump = true;
         playerHeight = GetComponentInChildren<CapsuleCollider>().height;
-        playerDebug = GameObject.FindWithTag("PlayerDebug").GetComponent<TextMeshPro>();
         camera = GameObject.FindWithTag("MainCamera").GetComponent<PlayerControl>();
     }
 
@@ -67,24 +64,7 @@ public class PlayerMovement : MonoBehaviour
         MyInput();
         SpeedControl();
 
-        if (debugMode) {
-            errorMessages = new List<string>();
-
-            // Add each variable we want to display to errorMessages list and combine with newLine
-            string playerRotation = "";
-            string orientationRotation = "";
-
-            playerRotation = "playerRotation: " + transform.rotation.eulerAngles.ToString();
-            errorMessages.Add(playerRotation);
-
-            orientationRotation = "orientationRotation: " + orientation.rotation.eulerAngles.ToString();
-            errorMessages.Add(orientationRotation);
-
-
-
-            playerDebug.SetText(string.Join(System.Environment.NewLine, errorMessages));
-        }
-
+ 
         if (isGrounded)
             rb.drag = groundDrag;
         else
