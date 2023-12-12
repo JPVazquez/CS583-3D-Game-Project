@@ -866,9 +866,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d31d9844d9784f9582503f854896a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHoldingItem: 0
-  ogDistance: 0
   canBePickedUp:
+    serializedVersion: 2
     m_Bits: 256
   forwardDirection: {fileID: 963194228}
 --- !u!1 &963194225
