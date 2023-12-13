@@ -7,9 +7,9 @@ public class boxscript : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-            if (other.name == "Creature")
+            if (other.tag == "Player")
             {
-            Invoke("loadNextLevel", 2f);
+            Invoke("loadNextLevel", 0.5f);
             }
 
             
