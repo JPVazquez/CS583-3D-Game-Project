@@ -65,6 +65,14 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = 0f;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "ShadowWall")
+        {
+            Debug.Log("Shadow");
+        }
+    }
+
 
     private void FixedUpdate() {
         MovePlayer();
