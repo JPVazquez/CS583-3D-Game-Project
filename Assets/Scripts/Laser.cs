@@ -14,12 +14,12 @@ public class Laser : MonoBehaviour
 
     private RaycastHit rayHit;
     private Ray ray;
-    int currentSceneIndex;
+    private int previousSceneIndex;
 
     private void Start()
     {
         lineRenderer.positionCount = 2;
-        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        previousSceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     // Update is called once per frame
@@ -32,12 +32,13 @@ public class Laser : MonoBehaviour
             lineRenderer.SetPosition(0, transform.position);
             lineRenderer.SetPosition(1, rayHit.point);
 
-            if(rayHit.collider.TryGetComponent(out Target target))
+            
+            if (rayHit.collider.tag == "Player")
             {
-                target.Hit();
-                onHitTarget?.Invoke();
+                PlayerPrefs.SetInt("PreviousSceneIndex", previousSceneIndex);
 
-                SceneManager.LoadScene(currentSceneIndex);
+                //Load game over screen
+                SceneManager.LoadScene("GameOver");
             }
         }
 
