@@ -7,17 +7,17 @@ public class boxscript : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "shadow")
-        {
-            print("test2");
+            if (other.name == "Creature")
+            {
+            Invoke("loadNextLevel", 2f);
+            }
 
-            //Invoke("loadNextLevel", 1f);
-        }
+            
     }
 
 
     private void loadNextLevel()
     {
-
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

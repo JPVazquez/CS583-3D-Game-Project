@@ -9,11 +9,17 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 2ed839c716e854e8bba909d1175f66ca
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/TutorialScene.unity
+    guid: 64e5c47c6b7974f8ab2dff0c770f553a
+  - enabled: 1
+    path: Assets/Scenes/RoomScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/SceneWithCharacterModel.unity
-    guid: 2cc4d492363fb4c20b2e92e9e776138c
+    path: Assets/Scenes/MazeScene.unity
+    guid: 89ef32dd5ffc44ae6a258c362459eef2
+  - enabled: 1
+    path: Assets/Scenes/Level 3.unity
+    guid: cc7606a3249d15a48981c574762b80f6
   - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: bbcee409f429247ed826713342d8cc72
